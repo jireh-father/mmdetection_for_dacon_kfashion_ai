@@ -1,11 +1,8 @@
 from .builder import DATASETS, PIPELINES, build_dataloader, build_dataset
 from .cityscapes import CityscapesDataset
 from .coco import CocoDataset
-from .char_coco import CharCocoDataset
 from .fashion import FashionDataset
-from .char_num_coco import CharNumCocoDataset
 from .custom import CustomDataset
-from .dog_eye_coco import DogEyeCocoDataset
 from .dataset_wrappers import (ClassBalancedDataset, ConcatDataset,
                                RepeatDataset)
 from .deepfashion import DeepFashionDataset
@@ -22,6 +19,5 @@ __all__ = [
     'LVISV1Dataset', 'GroupSampler', 'DistributedGroupSampler',
     'DistributedSampler', 'build_dataloader', 'ConcatDataset', 'RepeatDataset',
     'ClassBalancedDataset', 'WIDERFaceDataset', 'DATASETS', 'PIPELINES',
-    'build_dataset', 'replace_ImageToTensor', 'CharCocoDataset', 'CharNumCocoDataset',
-    'DogEyeCocoDataset', 'FashionDataset'
+    'build_dataset', 'replace_ImageToTensor', 'FashionDataset'
 ]
