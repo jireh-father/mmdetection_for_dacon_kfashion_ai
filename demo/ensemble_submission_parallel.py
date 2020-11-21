@@ -110,7 +110,6 @@ def mask_to_poly(mask):
 def ensemble(split_data):
     total_data = dict(split_data[0])
     process_id = split_data[1]
-    print(total_data)
     print('process_id', process_id)
     print('split data cnt', len(total_data))
     encoded_pixels = []
