@@ -3,3 +3,4 @@ cython
 numpy
 tqdm
 pandas
+sklearn
