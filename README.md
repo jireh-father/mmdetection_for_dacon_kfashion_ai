@@ -1,7 +1,7 @@
 # System Environment
-ubuntu 16.04
-python 3.7.9
-cuda 10.1
+- ubuntu 16.04
+- python 3.7.9
+- cuda 10.1
 
 # Install
 ```bash
