@@ -1,4 +1,3 @@
-print(1)
 import json
 import numpy as np
 from pycocotools import mask as mutils
@@ -11,7 +10,7 @@ import cv2
 from sklearn.metrics import jaccard_score
 from multiprocessing import Pool
 import pickle
-print(1)
+
 parser = ArgumentParser()
 parser.add_argument('--result_files', help='Image file')
 parser.add_argument('--output_dir')
@@ -26,7 +25,7 @@ parser.add_argument(
     '--score-thr', type=float, default=0.3, help='bbox score threshold')
 args = parser.parse_args()
 
-print(1)
+
 def rle_encode(mask):
     pixels = mask.T.flatten()
     # We need to allow for cases where there is a '1' at either end of the sequence.
@@ -46,7 +45,7 @@ def rle_encode(mask):
 
 def rle_to_string(runs):
     return ' '.join(str(x) for x in runs)
-print(1)
+
 
 # Used only for testing.
 # This is copied from https://www.kaggle.com/paulorzp/run-length-encode-and-decode.
@@ -107,7 +106,7 @@ def mask_to_poly(mask):
         return None
     return segmentation
 
-print(1)
+
 def ensemble(split_data):
     total_data = dict(split_data[0])
     process_id = split_data[1]
@@ -123,9 +122,10 @@ def ensemble(split_data):
     skip_cnt = 0
 
     for data_idx, image_id in enumerate(total_data):
-        print(data_idx, len(total_data))
+        if data_idx % 100 == 0:
+            print("process id {}. step {}/{}".format(process_id, data_idx, len(total_data)))
         if len(total_data[image_id]) == 1:
-            print("only one instance in a image")
+            # print("only one instance in a image")
             seg_result = total_data[image_id][0]
             encoded_pixels.append(rle_to_string(rle_encode(mutils.decode(seg_result['segmentation']))))
             img_ids.append(image_id)
@@ -141,7 +141,7 @@ def ensemble(split_data):
                 mask2 = mutils.decode(tmp_data[1]['segmentation'])
                 iou = jaccard_score(mask1.flatten(), mask2.flatten())
                 if iou == 1.0:
-                    print("same insatnce")
+                    # print("same insatnce")
                     seg_result = tmp_data[0]
                     encoded_pixels.append(rle_to_string(rle_encode(mask1)))
                     img_ids.append(image_id)
@@ -169,7 +169,7 @@ def ensemble(split_data):
 
                     iou = jaccard_score(mask1.flatten(), mask2.flatten())
                     if iou >= args.iou_thr:
-                        print('iou', iou)
+                        # print('iou', iou)
                         overlap_mask_ids.add(i)
                         overlap_mask_ids.add(j)
                         overlap_masks.append(
@@ -179,7 +179,7 @@ def ensemble(split_data):
             for mask_item1, mask_item2 in overlap_masks:
                 if mask_item1[0] in used_masks or mask_item2[0] in used_masks:
                     continue
-                print("merged")
+                # print("merged")
                 if args.use_merge:
                     if args.use_merge_overlap:
                         result_mask = mask_item1[1] * mask_item2[1]
@@ -203,7 +203,7 @@ def ensemble(split_data):
                 height.append(tmp_data[selected_id]['segmentation']['size'][0])
                 width.append(tmp_data[selected_id]['segmentation']['size'][1])
             for i in single_mask_ids:
-                print("single", i)
+                # print("single", i)
                 seg_result = tmp_data[i]
                 if i in mask_cache:
                     mask = mask_cache[i]
@@ -226,11 +226,9 @@ def ensemble(split_data):
 
 
 def main():
-    print(2)
     os.makedirs(args.output_dir, exist_ok=True)
 
     result_files = args.result_files.split(",")
-    print(2)
     total_data = {}
     for ridx, result_file in enumerate(result_files):
         json_data = json.load(open(result_file))
@@ -247,7 +245,6 @@ def main():
             #     continue
 
     total_cnt = len(total_data)
-    print(1)
     each_cnt = total_cnt // args.n
     split_data = []
     total_data_list = list(total_data.items())
@@ -256,7 +253,6 @@ def main():
     split_data[0] += total_data_list[args.n * each_cnt:]
     pool = Pool(args.n)
     pool.map(ensemble, list(zip(split_data, list(range(args.n)))))
-    print(1)
     print("all done")
     data = {'ImageId': [],
             'EncodedPixels': [],
@@ -274,11 +270,11 @@ def main():
     answer_dummy = submission.sample(10)
     print('total length', len(data['ImageId']))
     print("merge done")
-    print(1)
     submission.to_csv(os.path.join(args.output_dir, 'submission.csv'), index=False)
     answer_dummy.to_csv(os.path.join(args.output_dir, 'answer_dummy.csv'), index=False)
     # print("skip cnt", skip_cnt)
     print("wrote")
+
 
 if __name__ == '__main__':
     main()
