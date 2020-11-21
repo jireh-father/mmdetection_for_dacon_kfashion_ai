@@ -3,6 +3,9 @@
 - python 3.7.9
 - cuda 10.1
 
+# Requirements file
+requirements/build.txt
+
 # Install
 ```bash
 conda create -n dacon-mmlab python=3.7.9 -y
