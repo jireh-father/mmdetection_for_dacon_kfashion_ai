@@ -121,7 +121,7 @@ def ensemble(split_data):
     skip_cnt = 0
 
     for data_idx, image_id in enumerate(total_data):
-        if data_idx % 100 == 0:
+        if data_idx % 20 == 0:
             print("process id {}. step {}/{}".format(process_id, data_idx, len(total_data)))
         if len(total_data[image_id]) == 1:
             # print("only one instance in a image")
