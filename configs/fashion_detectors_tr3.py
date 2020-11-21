@@ -116,24 +116,11 @@ test_cfg = dict(
         max_num=1000,
         nms_thr=0.7,
         min_bbox_size=0),
-    # rcnn=dict(
-    #         # score_thr=0.6
-    #         score_thr=0.6,
-    #         nms=dict(type='nms', iou_threshold=0.5),
-    #         max_per_img=100,
-    #         mask_thr_binary=0.5)
     rcnn=dict(
-        # score_thr=0.6
-        score_thr=0.79,
-        nms=dict(type='soft_nms', iou_threshold=0.5),
+        score_thr=0.6,
+        nms=dict(type='nms', iou_threshold=0.5),
         max_per_img=100,
         mask_thr_binary=0.5)
-    # rcnn=dict(
-    #     # score_thr=0.05
-    #     score_thr=0.5,
-    #     nms=dict(type='nms', iou_threshold=0.3),
-    #     max_per_img=100,
-    #     mask_thr_binary=0.45)
 )
 
 dataset_type = 'FashionDataset'
@@ -191,28 +178,16 @@ evaluation = dict(metric=['bbox', 'segm'])
 
 work_dir = './work_dirs/fashion_detectors'
 
-# optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)
-
-# optimizer = dict(type='SGD', lr=0.008, momentum=0.9, weight_decay=0.0001)
-optimizer = dict(type='SGD', lr=0.002, momentum=0.9, weight_decay=0.0001)
-# optimizer = dict(type='Adam', lr=0.001, betas=(0.9, 0.999), eps=1e-8, weight_decay=0.00001)
-optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
+optimizer = dict(type='SGD', lr=0.004, momentum=0.9, weight_decay=0.0001)
+optimizer_config = dict(grad_clip=None)
 # learning policy
-# lr_config = dict(
-#     policy='step',
-#     warmup='linear',
-#     warmup_iters=500,
-#     warmup_ratio=0.001,
-#     step=[8, 11])
-# total_epochs = 12
-
 lr_config = dict(
     policy='step',
     warmup='linear',
     warmup_iters=500,
     warmup_ratio=0.001,
-    step=[36, 44])
-total_epochs = 50
+    step=[28, 32])
+total_epochs = 36
 
 checkpoint_config = dict(interval=1)
 # yapf:disable
@@ -220,11 +195,10 @@ log_config = dict(
     interval=50,
     hooks=[
         dict(type='TextLoggerHook'),
-        # dict(type='TensorboardLoggerHook')
     ])
 # yapf:enable
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 load_from = None
-resume_from = None
+resume_from = 'work_dirs/fashion_detectors/epoch_24.pth'
 workflow = [('train', 1)]
